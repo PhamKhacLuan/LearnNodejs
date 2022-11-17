@@ -3,3 +3,4 @@ node_modules/
 src/public/css/
 src/public/vendor/
 node/
+#text
