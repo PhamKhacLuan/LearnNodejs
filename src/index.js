@@ -7,6 +7,7 @@ const port = 3000;
 const path = require('path');
 
 const sortMiddleware = require('./app/middlewares/SortMiddleware');
+const loginMiddleware = require('./app/middlewares/LoginMiddleware');
 
 const route = require('./routes');
 const db = require('./config/db');
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 //custom middlewares
 app.use(sortMiddleware);
+app.use(loginMiddleware);
 //HTTP logger
 app.use(morgan('combined'));
 
@@ -54,6 +56,30 @@ app.engine(
 
                 return '<a href="?_sort&column='+field+'&type='+type+'">'+
                 '<span class="'+icon+'"></span></a>';
+            },
+            loginable:(isLoginForm) =>{
+                if(isLoginForm.enabled == true)
+                {
+                    return '<ul class="navbar-nav ml-auto mt-2 mt-lg-0">'
+                    +'<li class="nav-item dropdown">'
+                    +  '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"'
+                    +    'aria-haspopup="true" aria-expanded="false">'
+                    +   isLoginForm.name
+                    +  '</a>'
+                    +  '<div class="dropdown-menu" aria-labelledby="navbarDropdown">'
+                    +    '<a class="dropdown-item" href="/courses/create">Đăng khóa học</a>'
+                    +    '<div class="dropdown-divider"></div>'
+                    +    '<a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>'
+                    +    '<a class="dropdown-item" href="/me/stored/news">Bài viết của tôi</a>'
+                    +    '<div class="dropdown-divider"></div>'
+                    +    '<a class="dropdown-item" href="#">Đăng xuất</a>'
+                    +  '</div>'
+                    +'</li>'
+                    +'</ul>'
+                }
+                else{
+                    return '<a class="nav-item" href="/login/sign-in">Đăng nhập</a>';
+                }
             }
         }
     }),
