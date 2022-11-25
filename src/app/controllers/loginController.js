@@ -1,6 +1,5 @@
 // const Course = require('../models/Course');
 // const {mutipleMongooseToObject} = require('../../util/mongoose')
-
 const { render } = require("node-sass");
 const ClientUser = require("../models/ClientUser");
 const CourseController = require("./CourseController");
@@ -9,6 +8,7 @@ const SALT_ROUNDS = 10;
 const loginMethod = require('../method/LoginMethod');
 const randToken = require('rand-token');
 const jwt = require('jsonwebtoken');
+const { restore } = require("./CourseController");
 
 // const lowdb = require('lowdb');
 // const FileSync = require('lowdb/adapters/FileSync');
@@ -94,7 +94,14 @@ class LoginController {
                                 // Nếu user này đã có refresh token thì lấy refresh token đó từ database
                                 refreshToken = user.refreshToken;
                             }
-                            res.redirect(`/?_isLoginForm&user=${user.username}`);
+                            req.session.user =
+                            {
+                                name : user.name,
+                                username : user.username,
+                                phone : user.phone,
+                                address : user.address
+                            }
+                            res.redirect(`/`);
                         }
                     }
                 }

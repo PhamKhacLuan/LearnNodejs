@@ -7,16 +7,12 @@ module.exports = function LoginMiddleware(req, res, next) {
         phone: '',
         address: ''
     };
-    if(req.query.hasOwnProperty('_isLoginForm')){
-        console.log(req.query.user);
-        ClientUser.findOne({username: req.query.user})
-           .then(user => {
-                res.locals._isLoginForm.enabled = true;
-                res.locals._isLoginForm.name = user.name;
-                res.locals._isLoginForm.username = user.username;
-                res.locals._isLoginForm.phone = user.phone;
-                res.locals._isLoginForm.address = user.address;
-            })
+    if(req.session.user){
+        res.locals._isLoginForm.enabled = true;
+        res.locals._isLoginForm.name = req.session.user.name;
+        res.locals._isLoginForm.username = req.session.user.username;
+        res.locals._isLoginForm.phone = req.session.user.phone;
+        res.locals._isLoginForm.address = req.session.user.address;
     }
     next();
 }

@@ -2,6 +2,8 @@ var { engine } = require('express-handlebars');
 const morgan = require('morgan');
 const methodOverride = require('method-override')
 const express = require('express');
+const session = require('express-session');
+const store = new session.MemoryStore();
 const app = express();
 const port = 3000;
 const path = require('path');
@@ -23,12 +25,18 @@ app.use(
 );
 app.use(express.json());
 app.use(methodOverride('_method'));
+//sesssion
+app.use(session({
+    store,
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+  }))
 //custom middlewares
 app.use(sortMiddleware);
 app.use(loginMiddleware);
 //HTTP logger
 app.use(morgan('combined'));
-
 //Template engine
 app.engine(
     'hbs',
