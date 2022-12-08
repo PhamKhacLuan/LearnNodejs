@@ -1,5 +1,5 @@
 const Course = require('../models/Course');
-const { mongooseToObject } = require('../../util/mongoose')
+const { mutipleMongooseToObject, mongooseToObject } = require('../../util/mongoose')
 
 class CourseController {
     // [GET] /sourses/:slug
@@ -22,7 +22,16 @@ class CourseController {
         req.body.img = 'https://img.youtube.com/vi/' + req.body.videoId + '/sddefault.jpg';
         const course = new Course(req.body);
         course.save()
-            .then(() => res.redirect('/me/stored/courses'))
+            .then(() => {
+                Course.find()
+                    .then((courses) => {
+                        res.json({
+                            courses: mutipleMongooseToObject(courses)
+                        });
+                    }
+                    )
+                    .catch(next);
+            })
             .catch(error => {
 
             });
@@ -69,7 +78,7 @@ class CourseController {
     handleFormAction(req, res, next) {
         switch (req.body.action) {
             case 'delete':
-                Course.delete({ _id: {$in: req.body.courseIds} })
+                Course.delete({ _id: { $in: req.body.courseIds } })
                     .then(() => res.redirect('back'))
                     .catch(next);
                 break;
